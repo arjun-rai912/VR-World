@@ -1,141 +1,151 @@
+<!--
 
+
+
+* fire animation from Markus Neuy and Dirk Krause
+* ocean animation from Don Mccurdy
+-->
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>Low Poly Japanese Temple | Alvin Wan</title>
-    <meta name="description" content="Low Poly Japanese Temple">
+    <title>Stylized Low Poly Island in Virtual Reality (Dark Version)</title>
     <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/alvinwan/aframe-low-poly@0.0.5/dist/aframe-low-poly.min.js"></script>
     <script src="https://cdn.rawgit.com/matthewbryancurtis/aframe-star-system-component/db4f1030/index.js"></script>
     <script src="./ocean.js"></script>
+    <script src="./fire.js"></script>
+    <!-- Google Analytics -->
+    <script>
+      (function(i, s, o, g, r, a, m)
+      {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function()
+        {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+      ga('create', 'UA-32800241-3', 'alvinwan.com');
+      ga('send', 'pageview');
+    </script>
   </head>
   <body>
-    <a-scene background="color:#0f011a" fog="type: linear; color: #0f011a; near:5; far: 900">
-      <a-entity star-system="radius: 200; depth: 1000"></a-entity>
+    <a-scene fog="type: linear; color: #0e1417; near:5; far: 300">
+      <a-sky color="#0e1417"></a-sky>
+      <a-entity star-system="radius: 200; depth: 100"></a-entity>
       
-      <a-entity id="rig" position="-2 -0.5 -1" rotation="0 -40 0">
-        <a-camera wasd-controls="acceleration:1" look-controls></a-camera>
+      <!-- Mixins -->
+      <a-assets>
+        <a-mixin id="foliage" geometry="
+            primitive: cone;
+            segments-height: 1;
+            segments-radial:4;
+            radius-bottom:0.3;"
+           material="color:white;flat-shading: true;"></a-mixin>
+        <a-mixin id="trunk" geometry="
+            primitive: box;
+            height:0.5;
+            width:0.1;
+            depth:0.1;"
+           position="0 -0.5 0"
+           material="color:white;"></a-mixin>
+      </a-assets>
+
+      <!-- Lights! Original blue: #D0EAF9 -->
+      <a-entity light="
+          type: directional;
+          castShadow: true;
+          intensity: 0.3;
+          color: #638691;"
+        position="5 3 1"></a-entity>
+      <a-light intensity="0.1" type="ambient" position="1 1 1" color="#B4C5EC"></a-light>
+
+      <!-- Camera! -->
+      <a-entity id="rig" position="0 -0.5 2">
+        <a-camera wasd-controls look-controls></a-camera>
       </a-entity>
-      
-      <a-light type="directional"
-               cast-shadow="true"
-               intensity="0.3"
-               color="#6909b3"
-               position="5 3 1"
-               light="castShadow:true;"
-      ></a-light>
-      <a-light type="directional"
-               cast-shadow="true"
-               intensity="0.2"
-               color="#FFF"
-               position="5 3 1"
-               light="castShadow:true;"
-      ></a-light>
-      <a-light type="ambient"
-               intensity="0.15"
-               position="1 1 1"
-               color="#6909b3"
-      ></a-light>
 
-      <a-entity shadow position="0 1 -3" id="temple">
-        <a-cone id="pillar-left" radius-bottom="0.15" radius-top="0.07" height="2" position="-0.65 0 0">
-          <a-cone class="cap-left" radius-bottom="0.1" radius-top="0.1" height="0.05" position="0 1 0"></a-cone>
-        </a-cone>
-        <a-cone id="pillar-right" radius-bottom="0.15" radius-top="0.07" height="2" position="0.65 0 0">
-          <a-cone class="cap-right" radius-bottom="0.1" radius-top="0.1" height="0.05" position="0 1 0"></a-cone>
-        </a-cone>
-        <a-box id="bar-lower" height="0.15" depth="0.1" width="2" position="0 0.65 0">
-          <a-box class="cap-right" height="0.18" width="0.05" depth="0.13" position="1 0 0" ></a-box>
-          <a-box class="cap-left" height="0.18" width="0.05" depth="0.13" position="-1 0 0"></a-box>
-        </a-box>
-        <a-box id="bar-higher" height="0.2" depth="0.25" width="2.2" position="0 1.15 0">
-          <a-box class="cap-right" height="0.23" width="0.05" depth="0.28" position="1.1 0 0" rotation="0 0 -5"></a-box>
-          <a-box class="cap-left" height="0.23" width="0.05" depth="0.28" position="-1.1 0 0" rotation="0 0 5"></a-box>
-        </a-box>
-        <a-box id="cap-higher" height="0.05" depth="0.25" width="2.6" position="0 1.3 0">
-          <a-box class="cap-right" height="0.08" width="0.05" depth="0.28" position="1.3 0 0" rotation="0 0 -5"></a-box>
-          <a-box class="cap-left" height="0.08" width="0.05" depth="0.28" position="-1.3 0 0" rotation="0 0 5"></a-box>
-        </a-box>
-      </a-entity>
-      
-      <a-entity shadow class="lantern-center"
-                position="0 1 -3"
-                animation="property: position; from: 0 1 -3; to: -1 2 -4; loop: true; dir: alternate; dur: 8500"
-                animation__rotation="property: rotation; from: 5 10 5; to: -10 5 -5; loop: true; dir: alternate; dur: 2000; easing: linear">
-        
-        <a-entity id="lantern-shell">
-          <a-cylinder class="top-ring" height="0.02" radius="0.03" position="0 0.2 0"></a-cylinder>
-          <a-sphere class="top-ball" radius="0.02" position="0 0.22 0"></a-sphere>
+      <!-- Action! -->
+      <a-cylinder shadow class="iceberg" segments-radial="5" segments-height="1" height="0.5" radius="0.35" position="3 -0.1 -1.5"
+                  animation__rot="property: rotation; from: -5 0 0; to: 5 0 0; loop: true; dir: alternate"
+                  animation__pos="property: position; from: 3 -0.2 -1.5; to: 4 -0.2 -2.5; loop: true; dir: alternate; dur: 12000; elasticity: 0">
+      </a-cylinder>
+      <a-cylinder shadow class="iceberg" segments-radial="7" segments-height="1" height="0.5" radius="0.25" position="-3 -0.1 -0.5"
+                  animation__rot="property: rotation; from: 0 0 -5; to: 5 0 0; loop: true; dir: alternate; dur: 1500"
+                  animation__pos="property: position; from: -4 -0.2 -0.5; to: -2 -0.2 -0.5; loop: true; dir: alternate; dur: 15000; elasticity: 0">
+      </a-cylinder>
+      <a-cylinder shadow class="iceberg" segments-radial="6" segments-height="1" height="0.5" radius="0.25" position="-5 -0.2 -3.5"
+                  animation__rot="property: rotation; from: 5 0 -5; to: 5 0 0; loop: true; dir: alternate; dur: 800"
+                  animation__pos="property: position; from: -3 -0.2 -3.5; to: -5 -0.2 -5.5; loop: true; dir: alternate; dur: 15000; elasticity: 0">
+      </a-cylinder>
+      <a-ocean shadow depth="50" width="50" amplitude="0" amplitude-variance="0.1" speed="1.5" speed-variance="1" opacity="1" density="50" color="#5f8496"></a-ocean>
+      <a-ocean shadow depth="50" width="50" opacity="0.5" amplitude="0" amplitude-variance="0.15" speed="1.5" speed-variance="1" density="50" color="#5f8496"></a-ocean>
+      <a-sphere shadow scale="2 2 2" position="0 -3.5 -1.5" radius="2">
+        <a-entity position="0 1.5 0">
 
-          <a-cone class="top-cone"
-                  segments-height="1"
-                  segments-radial="4"
-                  flat-shading="true"
-                  radius-bottom="0.1"
-                  height="0.09"
-                  position="0 0.16 0"
-                  rotation="0 45 0"
-          ></a-cone>
-          <a-box class="top-roof" width="0.2" depth="0.2" height="0.02" position="0 0.1 0"></a-box>
+          <a-entity class="tree" shadow position="0 1.1 -0.2" rotation="-5 0 0">
+            <a-entity mixin="foliage"></a-entity>
+            <a-entity mixin="trunk"></a-entity>
+          </a-entity>
 
-          <a-box class="bottom" width="0.15" depth="0.15" height="0.02"></a-box>
+          <a-entity class="tree" shadow scale="0.75 0.75 0.75" position="-0.5 0.9 0" rotation="0 -50 10">
+            <a-entity mixin="foliage"></a-entity>
+            <a-entity mixin="trunk"></a-entity>
+          </a-entity>
 
-          <a-box class="bar" width="0.02" height="0.12" depth="0.02" rotation="5 0 5" position="-0.05 0.08 0.05"></a-box>
-          <a-box class="bar" width="0.02" height="0.12" depth="0.02" rotation="5 0 -5" position="0.05 0.08 0.05"></a-box>
-          <a-box class="bar" width="0.02" height="0.12" depth="0.02" rotation="-5 0 -5" position="0.05 0.08 -0.05"></a-box>
-          <a-box class="bar" width="0.02" height="0.12" depth="0.02" rotation="-5 0 5" position="-0.05 0.08 -0.05"></a-box>
-          <a-sphere class="orb" radius="0.03" position="0 0.05 0" opacity="1" emissive="#09edda"
-                  animation__opacity="property: opacity; from: 0.25; to: 1; loop: true; dir:alternate"></a-sphere>
+          <a-entity class="tree" shadow scale="0.75 0.75 0.75" position="0.5 0.9 0" rotation="0 -30 -10">
+            <a-entity mixin="foliage"></a-entity>
+            <a-entity mixin="trunk"></a-entity>
+          </a-entity>
+
+          <a-entity class="tree" shadow scale="0.5 0.5 0.5" position="0.2 0.8 0.15" rotation="0 20 0">
+            <a-entity mixin="foliage"></a-entity>
+            <a-entity mixin="trunk"></a-entity>
+          </a-entity>
+
+          <a-entity class="tree" shadow scale="0.4 0.3 0.5" position="-0.2 0.7 0.15" rotation="-5 10 5">
+            <a-entity mixin="foliage"></a-entity>
+            <a-entity mixin="trunk"></a-entity>
+          </a-entity>
+
+          <a-entity class="tree" shadow scale="0.4 0.6 0.5" position="-0.7 0.75 0.3" rotation="0 10 10">
+            <a-entity mixin="foliage"></a-entity>
+            <a-entity mixin="trunk"></a-entity>
+          </a-entity>
+
+          <a-entity class="tree" shadow scale="0.6 0.5 0.4" position="0.7 0.7 0.3" rotation="0 -10 -10">
+            <a-entity mixin="foliage"></a-entity>
+            <a-entity mixin="trunk"></a-entity>
+          </a-entity>
+
+          <a-entity class="bench" scale="0.8 0.8 0.8" position="0.25 0.52 0.4" rotation="0 -30 -10">
+            <a-cylinder rotation="0 0 90" radius="0.1" height="0.5" theta-start="180" theta-length="180">
+              <a-plane rotation="0 90 0" height="0.5" width="0.2"></a-plane>
+            </a-cylinder>
+            <a-cylinder position="0.18 -0.1 0" radius="0.04" rotation="90 0 0" height="0.2"></a-cylinder>
+            <a-cylinder position="-0.18 -0.1 0" radius="0.04" rotation="90 0 0" height="0.2"></a-cylinder>
+          </a-entity>
+
+          <a-entity class="bench" scale="0.8 0.8 0.8" position="-0.3 0.52 0.4" rotation="0 20 10">
+            <a-cylinder rotation="0 0 90" radius="0.1" height="0.5" theta-start="180" theta-length="180">
+              <a-plane rotation="0 90 0" height="0.5" width="0.2"></a-plane>
+            </a-cylinder>
+            <a-cylinder position="0.18 -0.1 0" radius="0.04" rotation="90 0 0" height="0.2"></a-cylinder>
+            <a-cylinder position="-0.18 -0.1 0" radius="0.04" rotation="90 0 0" height="0.2"></a-cylinder>
+          </a-entity>
+
+          <a-entity class="campfire" position="0 0.4 0.6" rotation="10 0 0">
+            <a-cylinder radius="0.03" height="0.25" rotation="0 45 90"></a-cylinder>
+            <a-cylinder radius="0.03" height="0.25" rotation="0 -45 90" position="0 0.01 0"></a-cylinder>
+            <a-light type="point" intensity="0.35" position="0 0.1 0" color="#FF440C"
+                     animation="property: intensity; to: 0.5; dur: 2000; loop: true; elasticity: 0; dir: alternate"></a-light>
+            <a-entity scale="0.15 0.15 0.15" fire="particles: 500;" position="0.0 0.01 0.0"></a-entity>
+          </a-entity>
         </a-entity>
-        <a-light type="point" intensity="0.4" position="0 0.05 0" color="#09edda" light="castShadow: true;"
-                 animation__distance="property:distance; from: 1; to: 2; dur: 1000; loop: true; dir: alternate"
-                 animation__intensity="property:intensity; from: 0.5; to: 0.6; dur: 1000; loop: true; dir: alternate"></a-light>
-      </a-entity>
-      
-      <a-entity shadow class="lantern-left"
-                position="-1.25 0.5 -3.5"
-                animation="property: position; from: -1.25 0.5 -3.5; to: -0.5 0.25 -2.25; loop: true; dir: alternate; dur: 10000; easing: linear"
-                animation__rotation="property: rotation; from: 5 10 5; to: -10 5 -5; loop: true; dir: alternate; dur: 2000; easing: linear">
-        <a-entity clone="#lantern-shell"></a-entity>
-        <a-light type="point" intensity="0.4" position="0 0.05 0" color="#09edda" light="castShadow: true;"
-                 animation__distance="property:distance; from: 1; to: 2; dur: 1000; loop: true; dir: alternate"
-                 animation__intensity="property:intensity; from: 0.5; to: 0.6; dur: 1000; loop: true; dir: alternate"></a-light>
-      </a-entity>
-      
-      <a-entity shadow class="lantern-right"
-                position="1.5 2 -2.5"
-                animation="property: position; from: 1.5 2 -2.5; to: 0 0.5 -3; loop: true; dir: alternate; dur: 12000; easing: linear"
-                animation__rotation="property: rotation; from: -5 -10 -5; to: 10 -5 5; loop: true; dir: alternate; dur: 2000; easing: linear">
-        <a-entity clone="#lantern-shell"></a-entity>
-        <a-light type="point" intensity="0.4" position="0 0.05 0" color="#09edda" light="castShadow: true;"
-                 animation__distance="property:distance; from: 2.5; to: 3; dur: 1000; loop: true; dir: alternate"
-                 animation__intensity="property:intensity; from: 0.5; to: 0.6; dur: 1000; loop: true; dir: alternate"></a-light>
-      </a-entity>
-      
-      <a-ocean shadow
-               depth="50"
-               width="50"
-               amplitude="0"
-               amplitude-variance="0.2"
-               speed="1.5"
-               speed-variance="1"
-               opacity="1"
-               density="50"
-               color="#841fde"
-               position="0 0.1 0"
-      ></a-ocean>
-      <a-ocean position="0 0.1 0"
-               depth="50" 
-               width="50"
-               opacity="0.5"
-               amplitude="0"
-               amplitude-variance="0.3"
-               speed="1.5"
-               speed-variance="1"
-               density="50"
-               color="#841fde"
-      ></a-ocean>
+      </a-sphere>
     </a-scene>
   </body>
 </html>
